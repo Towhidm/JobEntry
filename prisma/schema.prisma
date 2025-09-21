@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum Role {
+  EMPLOYER
+  JOBSEEKER
+}
+
+enum JobStatus {
+  ACTIVE
+  EXPIRED
+  CLOSED
+}
+
+// NextAuth Models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// User Model (for both auth and job board)
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  role          Role?
+
+  // NextAuth relations
+  accounts      Account[]
+  sessions      Session[]
+
+  // Job Board relations
+  jobs          Job[]        // Employer posts
+  applied       Application[] // Jobseeker applications
+  bookmarks     Bookmark[]
+}
+
+// Job Model
+model Job {
+  id          String @id @default(cuid())
+  title       String
+  description String
+  status      JobStatus
+  createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id])
+  applications Application[]
+  bookmarks    Bookmark[]
+}
+
+// Application Model
+model Application {
+  id          String @id @default(cuid())
+  user        User   @relation(fields: [userId], references: [id])
+  userId      String
+  job         Job    @relation(fields: [jobId], references: [id])
+  jobId       String
+  cv          String
+  coverLetter String?
+}
+
+// Bookmark Model
+model Bookmark {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+  job    Job    @relation(fields: [jobId], references: [id])
+  jobId  String
+}
