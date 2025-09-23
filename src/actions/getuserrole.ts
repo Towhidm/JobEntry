@@ -13,6 +13,7 @@ export default async function GetUserRole() {
   const user = session.user as { role?: "employer" | "jobseeker" | null };
 
   if (!user.role) {
+    console.log(user);
     redirect("/selectrole"); // new users
   } else if (user.role === "employer") {
     redirect("/dashboard/employer");

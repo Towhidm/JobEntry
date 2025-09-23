@@ -62,12 +62,12 @@ export function SignUpForm({
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
+                  <Link
+                    href="/ForgotPassword"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
                     Forgot your password?
-                  </a>
+                  </Link>
                 </div>
                 <Input
                   id="password"
@@ -116,9 +116,9 @@ export function SignUpForm({
             <div className="mt-4 text-center text-sm">
               Have an account?
               <Link href="/Login">
-              <Button variant="link" className="cursor-pointer">
-                Login
-              </Button>
+                <Button variant="link" className="cursor-pointer">
+                  Login
+                </Button>
               </Link>
             </div>
           </form>

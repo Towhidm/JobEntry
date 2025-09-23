@@ -101,3 +101,10 @@ model Bookmark {
   job    Job    @relation(fields: [jobId], references: [id])
   jobId  String
 }
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}

@@ -3,7 +3,7 @@ import { prisma } from "@/lib";
 import { User } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { Toaster } from "@/components/ui/sonner"
+import bcrypt from "bcryptjs";
 
 const CreateSignUpSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -49,11 +49,12 @@ const SignUpActions = async (
   }
   let user: User;
   try {
+    const hashedPassword = await bcrypt.hash(result.data.password, 10);
     user = await prisma.user.create({
       data: {
         name: result.data.name,
         email: result.data.email,
-        password: result.data.password,
+        password: hashedPassword,
         role: result.data.role,
       },
     });
