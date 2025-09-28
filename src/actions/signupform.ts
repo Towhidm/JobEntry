@@ -74,6 +74,6 @@ const SignUpActions = async (
     }
   }
   
-  redirect("/");
+  redirect("/home");
 };
 export default SignUpActions;

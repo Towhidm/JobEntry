@@ -1,6 +1,7 @@
 import React from 'react'
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import SelectRolePage from '@/actions/selectrole';
 
 export default function SelectRole() {
   return (
@@ -14,14 +15,14 @@ export default function SelectRole() {
         <h2 className="text-2xl font-bold mb-2">Complete you identication</h2>
         <p className="text-gray-600 mb-6">You must have to select any one</p>
 
-        <form  className="flex flex-col gap-4">
-          <RadioGroup defaultValue="jobseeker" name="role">
+        <form action={SelectRolePage} className="flex flex-col gap-4">
+          <RadioGroup defaultValue="JOBSEEKER" name="role">
                 <div className="flex items-center gap-3">
-                  <RadioGroupItem value="employer" id="r1" />
+                  <RadioGroupItem value="EMPLOYER" id="r1" />
                   <Label htmlFor="r1">Employer </Label>
                 </div>
                 <div className="flex items-center gap-3">
-                  <RadioGroupItem value="jobseeker" id="r2" />
+                  <RadioGroupItem value="JOBSEEKER" id="r2" />
                   <Label htmlFor="r2">Jobseeker</Label>
                 </div>
               </RadioGroup>
