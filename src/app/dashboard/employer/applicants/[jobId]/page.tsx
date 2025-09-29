@@ -6,14 +6,17 @@ import { updateApplicationStatus } from "@/actions/updateApplicationStatus";
 export default async function ApplicationsPage({
   params,
 }: {
-  params: { jobId: string };
+  params: Promise<{
+    jobId: string;
+  }>;
 }) {
+  const { jobId } = await params;
   const session = await auth();
   const user = session?.user;
   if (!user || user.role !== "EMPLOYER") redirect("/");
 
   const job = await prisma.job.findUnique({
-    where: { id: params.jobId },
+    where: { id: jobId },
     include: { applications: { include: { user: true } } },
   });
 
@@ -63,10 +66,10 @@ export default async function ApplicationsPage({
                   value="APPROVED"
                   className={`px-3 py-1 rounded ${
                     app.status === "APPROVED"
-                      ? "bg-green-400 text-white cursor-not-allowed" 
+                      ? "bg-green-400 text-white cursor-not-allowed"
                       : "bg-green-600 text-white"
                   }`}
-                  disabled={app.status === "APPROVED"} 
+                  disabled={app.status === "APPROVED"}
                 >
                   {app.status === "APPROVED" ? "Approved" : "Approve"}
                 </button>
@@ -78,10 +81,10 @@ export default async function ApplicationsPage({
                   value="REJECTED"
                   className={`px-3 py-1 rounded ${
                     app.status === "REJECTED"
-                      ? "bg-red-400 text-white cursor-not-allowed" 
+                      ? "bg-red-400 text-white cursor-not-allowed"
                       : "bg-red-600 text-white"
                   }`}
-                  disabled={app.status === "REJECTED"} 
+                  disabled={app.status === "REJECTED"}
                 >
                   {app.status === "REJECTED" ? "Rejected" : "Reject"}
                 </button>

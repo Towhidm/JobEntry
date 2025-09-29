@@ -19,24 +19,20 @@ export async function saveApplication(formData: FormData) {
   const fileName = `${timestamp}-${cvFile.name}`;
 
   // Upload to Supabase Storage
-  const { data: uploadData, error: uploadError } = await supabase.storage
+  const { error: uploadError } = await supabase.storage
     .from("cv-uploads")
     .upload(fileName, buffer, { contentType: cvFile.type });
 
   if (uploadError) throw new Error(uploadError.message);
 
-const { data } = supabase.storage
-  .from("cv-uploads")
-  .getPublicUrl(fileName);
+  const { data } = supabase.storage.from("cv-uploads").getPublicUrl(fileName);
 
-
-
-  const publicUrl = data.publicUrl; 
+  const publicUrl = data.publicUrl;
 
   // Save to DB
   await prisma.application.create({
     data: {
-      userId: user.id as string ,
+      userId: user.id as string,
       jobId,
       cv: publicUrl,
       coverLetter,

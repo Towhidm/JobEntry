@@ -1,26 +1,35 @@
-import { auth } from "@/auth"
-import { prisma } from "@/lib"
-import { redirect } from "next/navigation"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { saveApplication } from "@/actions/Apply"
+import { auth } from "@/auth";
+import { prisma } from "@/lib";
+import { redirect } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { saveApplication } from "@/actions/Apply";
 
-export default async function ApplyPage({ params }: { params: { jobId: string } }) {
-  const session = await auth()
-  const user = session?.user
+export default async function ApplyPage({
+  params,
+}: {
+  params: Promise<{
+    jobId: string;
+  }>;
+}) {
+  const { jobId } = await params;
+  const session = await auth();
+  const user = session?.user;
 
-  if (!user) redirect("/login")
-  if (user.role !== "JOBSEEKER") redirect("/")
+  if (!user) redirect("/login");
+  if (user.role !== "JOBSEEKER") redirect("/");
 
   const job = await prisma.job.findUnique({
-    where: { id: params.jobId },
-  })
+    where: { id: jobId },
+  });
 
-  if (!job) return <p>Job not found</p>
+  if (!job) return <p>Job not found</p>;
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-white shadow rounded">
-      <h1 className="text-2xl font-bold mb-4 text-[#1db657]">Apply for {job.title}</h1>
+      <h1 className="text-2xl font-bold mb-4 text-[#1db657]">
+        Apply for {job.title}
+      </h1>
       <form action={saveApplication} className="space-y-4">
         <Input type="hidden" name="jobId" value={job.id} />
 
@@ -47,5 +56,5 @@ export default async function ApplyPage({ params }: { params: { jobId: string } 
         </button>
       </form>
     </div>
-  )
+  );
 }
