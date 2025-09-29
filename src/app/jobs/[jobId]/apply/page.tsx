@@ -1,7 +1,6 @@
 import { auth } from "@/auth"
 import { prisma } from "@/lib"
 import { redirect } from "next/navigation"
-import { revalidatePath } from "next/cache"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { saveApplication } from "@/actions/Apply"

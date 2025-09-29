@@ -109,7 +109,7 @@ export default async function SavedJobsPage() {
                 {/* Apply button for jobseekers */}
                 {session.user.role === "JOBSEEKER" && job.status === "ACTIVE" && (
                   <Link href={`/apply/${job.id}`}>
-                    <Button>Apply</Button>
+                    <Button variant="outline" className="cursor-pointer">Apply</Button>
                   </Link>
                 )}
               </div>

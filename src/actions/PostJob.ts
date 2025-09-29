@@ -2,7 +2,6 @@
 import { prisma } from "@/lib";
 import { JobStatus } from "@prisma/client";
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 
 
 const PostJobs = async (form:FormData) =>{
