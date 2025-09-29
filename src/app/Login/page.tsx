@@ -15,7 +15,7 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 
-export default function LoginForm({ className }: { className?: string }) {
+export default function LoginForm() {
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -50,7 +50,7 @@ if (res?.error) {
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
-        <div className={cn("flex flex-col gap-6", className)}>
+        <div className={cn("flex flex-col gap-6")}>
           <Card className="bg-[#16a34a] text-white">
             <CardHeader>
               <CardTitle>Login to your account</CardTitle>

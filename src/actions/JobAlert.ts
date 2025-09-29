@@ -10,6 +10,20 @@ export async function createJobAlert(jobId: string) {
   }
 
   try {
+    // Check if the job alert already exists
+    const existingAlert = await prisma.jobAlert.findFirst({
+      where: {
+        userId: session.user.id,
+        jobId,
+      },
+    });
+
+    if (existingAlert) {
+      return {
+        success: false,
+        message: "You already created an alert for this job.",
+      };
+    }
     await prisma.jobAlert.create({
       data: {
         userId: session.user.id,
@@ -17,11 +31,7 @@ export async function createJobAlert(jobId: string) {
       },
     });
     return { success: true };
-  } catch (error: any) {
-    if (error.code === "P2002") {
-      // Unique constraint violation (already created alert)
-      return { success: false, message: "You already created an alert for this job." };
-    }
+  } catch (error) {
     throw error;
   }
 }

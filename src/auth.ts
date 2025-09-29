@@ -1,14 +1,11 @@
-import { string } from 'zod';
-
 import NextAuth from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "./lib";
-import CredentialsProvider from "next-auth/providers/credentials"
+import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-
-
+import type { User } from "next-auth";
 
 if (!process.env.GITHUB_ID || !process.env.GITHUB_SECRET) {
   throw new Error("Missing github client id or client secret");
@@ -40,7 +37,7 @@ export const {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-         async authorize(credentials) {
+      async authorize(credentials): Promise<User | null> {
         if (!credentials?.email || !credentials?.password) return null;
 
         const user = await prisma.user.findUnique({
@@ -53,26 +50,26 @@ export const {
           user.password as string
         );
         if (!isValid) return null;
+        
 
-        return { id: user.id, email: user.email, role: (user as any).role };
+        return { id: user.id, email: user.email, role: user.role } as User;
       },
-    })
+    }),
   ],
   session: { strategy: "jwt" },
-   callbacks: {
+  callbacks: {
     async session({ session, token }) {
       if (session?.user && token) {
         session.user.id = token.sub as string;
-        session.user.role  = (token as any).role ;
+        session.user.role = token.role;
       }
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role;
+        token.role = user.role;
       }
       return token;
     },
   },
-   
 });

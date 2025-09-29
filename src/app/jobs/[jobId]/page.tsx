@@ -28,34 +28,45 @@ function timeAgo(date: Date) {
   return `${value} ${unit}${value > 1 ? "s" : ""} ago`;
 }
 
-export default async function ApplicantsPage({ params }: { params: { jobId: string } }) {
+export default async function ApplicantsPage({
+  params,
+}: {
+  params: Promise<{
+    jobId: string;
+  }>;
+}) {
+  const { jobId } = await params;
   const session = await auth();
   const role = session?.user?.role;
 
   if (!session?.user?.id) {
-    return <p className="text-center mt-10">You must be logged in to view applicants.</p>;
+    return (
+      <p className="text-center mt-10">
+        You must be logged in to view applicants.
+      </p>
+    );
   }
-
 
   const jobs = await prisma.job.findMany({
-      orderBy: { createdAt: "desc" },
-      include: {
-        _count: { select: { applications: true, bookmarks: true } },
-        bookmarks: session?.user?.id
-          ? {
-              where: { userId: params.jobId },
-              select: { id: true }, // check if this user bookmarked
-            }
-          : false,
-      },
-    });
-
+    orderBy: { createdAt: "desc" },
+    include: {
+      _count: { select: { applications: true, bookmarks: true } },
+      bookmarks: session?.user?.id
+        ? {
+            where: { userId: jobId },
+            select: { id: true }, // check if this user bookmarked
+          }
+        : false,
+    },
+  });
 
   if (!jobs) {
-    return <p className="text-center mt-10">Job not found or not authorized.</p>;
+    return (
+      <p className="text-center mt-10">Job not found or not authorized.</p>
+    );
   }
 
-   return (
+  return (
     <div className="max-w-5xl mx-auto mt-10">
       <h1 className="text-3xl font-bold mb-6">Job Board</h1>
 
@@ -128,7 +139,6 @@ export default async function ApplicantsPage({ params }: { params: { jobId: stri
                   Download
                 </Button>
               </a>
-             
             </div>
           </div>
         ))}
@@ -136,4 +146,3 @@ export default async function ApplicantsPage({ params }: { params: { jobId: stri
     </div>
   );
 }
-

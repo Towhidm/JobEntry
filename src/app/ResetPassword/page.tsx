@@ -2,10 +2,10 @@
 
 import { resetPassword } from "@/actions/resetpassword";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react"; 
 import { toast } from "sonner";
 
-export default function ResetPasswordPage() {
-  // get token from URL
+function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
 
@@ -28,10 +28,8 @@ export default function ResetPasswordPage() {
         <h2 className="text-2xl font-bold mb-4">Reset Password</h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {/* Hidden token input (from URL) */}
           <input type="hidden" name="token" value={token} />
 
-          {/* New password */}
           <input
             type="password"
             name="newPassword"
@@ -40,7 +38,6 @@ export default function ResetPasswordPage() {
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
           />
 
-          {/* Confirm password */}
           <input
             type="password"
             name="confirmPassword"
@@ -58,5 +55,13 @@ export default function ResetPasswordPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div className="text-center p-6">Loading...</div>}>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }

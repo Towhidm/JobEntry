@@ -1,6 +1,5 @@
 "use server";
 import { prisma } from "@/lib";
-import { User } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
@@ -47,10 +46,9 @@ const SignUpActions = async (
       errors: result.error.flatten().fieldErrors,
     };
   }
-  let user: User;
   try {
     const hashedPassword = await bcrypt.hash(result.data.password, 10);
-    user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         name: result.data.name,
         email: result.data.email,
@@ -73,7 +71,7 @@ const SignUpActions = async (
       };
     }
   }
-  
+
   redirect("/home");
 };
 export default SignUpActions;
